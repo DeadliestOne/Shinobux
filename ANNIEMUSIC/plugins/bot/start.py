@@ -10,7 +10,7 @@ import config
 from ANNIEMUSIC import app
 from ANNIEMUSIC.misc import _boot_
 from ANNIEMUSIC.plugins.sudo.sudoers import sudoers_list
-from ANNIEMUSICn.utils.database import (
+from ANNIEMUSIC.utils.database import (
     add_served_chat,
     add_served_user,
     blacklisted_chats,
