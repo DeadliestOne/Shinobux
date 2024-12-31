@@ -1,29 +1,57 @@
 import asyncio
+import random
 import time
 from pyrogram import filters
 from pyrogram.enums import ChatType
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Message
 from youtubesearchpython.__future__ import VideosSearch
-
 
 import config
 from ANNIEMUSIC import app
 from ANNIEMUSIC.misc import _boot_
 from ANNIEMUSIC.plugins.sudo.sudoers import sudoers_list
+from ANNIEMUSIC.utils import bot_sys_stats
 from ANNIEMUSIC.utils.database import (
     add_served_chat,
     add_served_user,
     blacklisted_chats,
     get_lang,
+    get_served_chats,
+    get_served_users,
     is_banned_user,
     is_on_off,
 )
 from ANNIEMUSIC.utils.decorators.language import LanguageStart
 from ANNIEMUSIC.utils.formatters import get_readable_time
-from ANNIEMUSIC.utils.inline import help_pannel, private_panel, start_panel
-from config import OWNER_ID
-from helpers import get_string
+from ANNIEMUSIC.utils.inline.start import private_panel, start_panel
+from ANNIEMUSIC.utils.inline.help import first_page
+from config import BANNED_USERS, AYUV, START_IMG_URL
+from strings import get_string
 
+ANNIE_VID = [
+    "https://telegra.ph/file/9b7e1b820c72a14d90be7.mp4",
+    "https://telegra.ph/file/a4d90b0cb759b67d68644.mp4",
+    "https://telegra.ph/file/72f349b1386d6d9374a38.mp4",
+    "https://telegra.ph/file/2b75449612172a96d4599.mp4",
+    "https://telegra.ph/file/b3ac2d77205d5ded860de.mp4",
+    "https://telegra.ph/file/58ae4ac86ef70dc8c8f6a.mp4",
+    "https://telegra.ph/file/c6c1ac9aee4192a8a3747.mp4",
+    "https://telegra.ph/file/55c840c8eba0555318f0d.mp4",
+    "https://telegra.ph/file/e97715885d0a0cfbddaaa.mp4",
+    "https://telegra.ph/file/943bb99829ec526c3f99a.mp4"
+]
+
+STICKERS = [
+    "CAACAgUAAx0Cd6nKUAACASBl_rnalOle6g7qS-ry-aZ1ZpVEnwACgg8AAizLEFfI5wfykoCR4h4E",
+    "CAACAgUAAx0CfL_LsAACCSRl_oru7uW8WAt3-L1pYQWe_1mxawACQw8AAj78MVeb3v2OFvEnNB4E",
+    "CAACAgEAAx0Cd6nKUAACATVl_rtAi9KCVQf8vcUC4FMDUfLP8wACHQEAAlEpDTnhphyRDaTrPR4E",
+    "CAACAgUAAx0Cd6nKUAACATJl_rsEJOsaaPSYGhU7bo7iEwL8AAPMDgACu2PYV8Vb8aT4_HUPHgQ",
+
+]
+
+async def delete_sticker_after_delay(message, delay):
+    await asyncio.sleep(delay)
+    await message.delete()
 
 @app.on_message(filters.command(["start"]) & filters.private & ~filter_users)
 @LanguageStart
@@ -63,7 +91,7 @@ async def start_pm(client, message: Message, _):
             await sudoers_list(client=client, message=message, _=_)
             if await is_on_off(2):
                 await app.send_message(
-                    chat_id=configuration.LOGGER_ID,
+                    chat_id=config.LOGGER_ID,
                     text=f"{message.from_user.mention} ᴄʜᴇᴄᴋᴇᴅ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n"
                          f"<b>ᴜsᴇʀ ɪᴅ:</b> <code>{message.from_user.id}</code>\n"
                          f"<b>ᴜsᴇʀɴᴀᴍᴇ:</b> @{message.from_user.username}",
@@ -104,7 +132,7 @@ async def start_pm(client, message: Message, _):
                 )
                 if await is_on_off(2):
                     await app.send_message(
-                        chat_id=configuration.LOGGER_ID,
+                        chat_id=config.LOGGER_ID,
                         text=f"<b>{message.from_user.mention} ᴄʜᴇᴄᴋᴇᴅ ᴛʀᴀᴄᴋ ɪɴғᴏ.</b>\n\n"
                              f"<b>• ɪᴅᴇɴᴛɪғɪᴇʀ ⌯</b> <code>{message.from_user.id}</code>\n"
                              f"<b>• ʜᴀɴᴅʟᴇ ⌯</b> {message.from_user.username}.t.me",
@@ -124,7 +152,7 @@ async def start_pm(client, message: Message, _):
         )
         if await is_on_off(2):
             await app.send_message(
-                chat_id=configuration.LOGGER_ID,
+                chat_id=config.LOGGER_ID,
                 text=f"<b>{message.from_user.mention} sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.</b>\n\n"
                      f"<b>• ɪᴅᴇɴᴛɪғɪᴇʀ :</b> <code>{message.from_user.id}</code>\n"
                      f"<b>• ʜᴀɴᴅʟᴇ :</b> {message.from_user.username}.t.me",
