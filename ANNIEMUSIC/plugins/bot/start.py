@@ -53,7 +53,7 @@ async def delete_sticker_after_delay(message, delay):
     await asyncio.sleep(delay)
     await message.delete()
 
-@app.on_message(filters.command(["start"]) & filters.private & ~filter_users)
+@app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
@@ -159,7 +159,7 @@ async def start_pm(client, message: Message, _):
             )
 
 
-@app.on_message(filters.command(["start"]) & filters.group & ~filter_users)
+@app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
