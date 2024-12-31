@@ -21,7 +21,7 @@ from ANNIEMUSIC.utils.database import (
 from ANNIEMUSIC.utils.decorators.language import LanguageStart
 from ANNIEMUSIC.utils.formatters import get_readable_time
 from ANNIEMUSIC.utils.inline import help_pannel, private_panel, start_panel
-from configuration import OWNER_ID
+from config import OWNER_ID
 from helpers import get_string
 
 
